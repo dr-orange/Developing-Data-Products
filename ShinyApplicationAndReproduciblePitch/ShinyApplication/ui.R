@@ -10,18 +10,18 @@
 library(shiny)
 library(leaflet)
 
-# Define UI for application that draws a histogram
+# Define UI for application that draws a map
 shinyUI(fluidPage(
         # Application title
         titlePanel("Health Impact of Tornado"),
         
         # Show a plot of the generated distribution
         leafletOutput("distPlot"),
-        
+
         hr(),
         
         fluidRow(column(
-                12,
+                9,
                 sliderInput(
                         "year",
                         "Year:",
@@ -29,7 +29,7 @@ shinyUI(fluidPage(
                         max = 2011,
                         value = 2006,
                         sep = "",
-                        width = "80%"
+                        width = "100%"
                 )
-        ))
+        ), column(3, h4("Options"), checkboxInput("isALAND", label = "show ALAND", value = FALSE)))
 ))
