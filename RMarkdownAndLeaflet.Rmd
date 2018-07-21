@@ -1,0 +1,94 @@
+---
+title: "R Markdown and Leaflet"
+author: "Koji"
+date: "2018/7/21"
+output:
+  html_document: default
+---
+
+## Data Source
+
+[Storm Data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2) [Mirror Site]
+
+The events in the database start in the year 1950 and end in November 2011. In the earlier years of the database there are generally fewer events recorded, most likely due to a lack of good records. More recent years should be considered more complete.
+
+## Data Processing
+
+### Load Packages
+
+```{r warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(leaflet)
+```
+
+### Download Data
+
+Download the data from the NOAA database.
+
+```{r}
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2", destfile = "repdata-data-StormData.csv.bz2")
+```
+
+### Read Data
+
+Load dataset into R.
+
+```{r}
+stormData <- read.csv("repdata-data-StormData.csv.bz2", header = TRUE, stringsAsFactors = FALSE)
+```
+
+Any columns that will not be needed for the final analysis will be removed to make the dataset a little smaller.
+
+```{r}
+extractData <- stormData %>%
+        filter(as.POSIXct(stormData$BGN_DATE, format = "%m/%d/%Y %H:%M:%S") > "2010-12-31") %>%
+        select(BGN_DATE, EVTYPE, FATALITIES, INJURIES, LATITUDE, LONGITUDE)
+```
+
+
+Top 10 harmful event:
+
+```{r echo=FALSE}
+humanImpactTop10 <- extractData %>%
+        # fatalities and injuries
+        mutate(PERSONS = FATALITIES + INJURIES) %>%
+        select(EVTYPE, PERSONS) %>%
+        # summarize each event type
+        group_by(EVTYPE) %>%
+        summarize_all(sum) %>%
+        # top 10
+        top_n(10, PERSONS)
+
+ggplot(data = humanImpactTop10, aes(x = reorder(EVTYPE, -PERSONS), y = PERSONS)) +
+        geom_bar(stat = "identity", position = position_dodge(), fill = "orangered") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        labs(x = "Weather event", y = "Total health impact [persons]") +
+        ggtitle("Top 10 Harmful Events")
+```
+
+The **TORNADO** is the most harmful.
+
+
+## Plot On The Map
+Finally, let's plot on the map how much tornado hurt to what region.
+
+```{r}
+tornado <- extractData %>%
+        filter(EVTYPE == "TORNADO") %>%
+        # fatalities and injuries
+        mutate(PERSONS = FATALITIES + INJURIES, 
+               LATITUDE = LATITUDE / 100, 
+               LONGITUDE = - LONGITUDE / 100) %>%
+        filter(PERSONS > 10) %>%
+        select(PERSONS, LATITUDE, LONGITUDE)
+```
+```{r}
+leaflet(tornado) %>%
+        addTiles() %>%
+        addCircles(
+                lng = ~LONGITUDE, lat = ~LATITUDE, weight = 1,
+                radius = ~sqrt(PERSONS) * 5000
+        )
+```
+
