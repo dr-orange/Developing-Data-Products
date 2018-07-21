@@ -51,6 +51,11 @@ shinyUI(
                                 checkboxInput("isALAND", label = "show ALAND", value = FALSE),
                                 p("ALAND: Land Area (square meters)")
                         )
-                ))
+                )),
+                
+                # Appendix
+                h3("Appendix"),
+                tags$span("server.R and ui.R code on "),
+                tags$a(href="https://github.com/dr-orange/Developing-Data-Products/tree/master/ShinyApplicationAndReproduciblePitch/ShinyApplication", "GitHub")
         )
 )

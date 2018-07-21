@@ -1,0 +1,80 @@
+---
+title: "Health Impact of Tornado App"
+author: "Koji"
+date: "2018/7/22"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(knitr)
+library(leaflet)
+```
+
+# Course project
+
+This peer assessed assignment has two parts. First, you will create a Shiny application and deploy it on Rstudio's servers. Second, you will use Slidify or Rstudio Presenter to prepare a reproducible pitch presentation about your application.
+
+```{r, cache=TRUE}
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2", destfile = "repdata-data-StormData.csv.bz2")
+stormData <- read.csv("repdata-data-StormData.csv.bz2", header = TRUE, stringsAsFactors = FALSE)
+extractData <- stormData %>%
+        filter(as.POSIXct(stormData$BGN_DATE, format = "%m/%d/%Y %H:%M:%S") > "2010-12-31") %>%
+        select(BGN_DATE, EVTYPE, FATALITIES, INJURIES, LATITUDE, LONGITUDE)
+```
+
+## Our App Address | the question:
+
+- Across the United States, which types of events are most harmful with respect to population health thru the century?
+
+### Links
+
+- [Health Impact Of Tornado App](https://dr-orange-jr.shinyapps.io/HealthImpactOfTornadoApp/)
+- [GitHub repo](https://github.com/dr-orange/Developing-Data-Products/tree/master/ShinyApplicationAndReproduciblePitch)
+
+## The tornado is the most harmful
+
+```{r echo=FALSE}
+humanImpactTop10 <- extractData %>%
+        # fatalities and injuries
+        mutate(PERSONS = FATALITIES + INJURIES) %>%
+        select(EVTYPE, PERSONS) %>%
+        # summarize each event type
+        group_by(EVTYPE) %>%
+        summarize_all(sum) %>%
+        # top 10
+        top_n(10, PERSONS)
+
+ggplot(data = humanImpactTop10, aes(x = reorder(EVTYPE, -PERSONS), y = PERSONS)) +
+        geom_bar(stat = "identity", position = position_dodge(), fill = "orangered") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        labs(x = "Weather event", y = "Total health impact [persons]") +
+        ggtitle("Top 10 Harmful Events")
+```
+
+
+## How much tornado hurt to what region
+
+```{r}
+tornado <- extractData %>%
+        filter(EVTYPE == "TORNADO") %>%
+        # fatalities and injuries
+        mutate(PERSONS = FATALITIES + INJURIES, 
+               LATITUDE = LATITUDE / 100, 
+               LONGITUDE = - LONGITUDE / 100) %>%
+        filter(PERSONS > 10) %>%
+        select(PERSONS, LATITUDE, LONGITUDE)
+
+leaflet(tornado) %>%
+        addTiles() %>%
+        addCircles(
+                lng = ~LONGITUDE, lat = ~LATITUDE, weight = 1,
+                radius = ~sqrt(PERSONS) * 5000
+        )
+```
