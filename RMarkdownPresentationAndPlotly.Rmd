@@ -1,0 +1,60 @@
+---
+title: "R Markdown Presentation & Plotly"
+author: "Koji"
+date: "2018/7/21"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(knitr)
+# Load data
+data(mtcars)
+```
+
+# Course project
+
+Create a web page presentation using R Markdown that features a plot created with Plotly. Host your webpage on either GitHub Pages, RPubs, or NeoCities. Your webpage must contain the date that you created the document, and it must contain a plot created with Plotly. We would love to see you show off your creativity!
+
+
+## Motor Trend
+
+We are particularly interested in the following two questions:
+
+- “Is an automatic or manual transmission better for MPG”
+- "Quantify the MPG difference between automatic and manual transmissions"
+
+## Calculate correlation
+
+`wt`, `disp` and `cyl` show high correlation.
+
+```{r cars, echo = TRUE}
+kable( cor( mtcars[, c(1, 9, 6, 3, 2)]), digits = 2)
+```
+
+## Summary {.smaller}
+
+```{r, message=FALSE, echo=TRUE}
+betterFit <- lm(mpg ~ am + wt + disp + cyl, mtcars)
+summary(betterFit)
+```
+
+## Residuals vs Leverage
+
+```{r, message=FALSE}
+plot <- ggplot(betterFit, aes(.hat, .stdresid)) +
+        geom_point(aes(size = .cooksd, color = .cooksd)) +
+        scale_color_continuous(low = "darkgrey", high = "orangered") +
+        ylab("Standardized Residuals (.stdresid)") +
+        xlab("Leverage (.hat)") +
+        geom_smooth(se = FALSE)
+ggplotly(plot)
+```
+
+# Thank you!
