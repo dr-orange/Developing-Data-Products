@@ -54,6 +54,6 @@ for mobile-friendly interactive maps](https://leafletjs.com)
 
 - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
 
-    [![](https://images.tandf.co.uk/common/jackets/crclarge/978113835/9781138359338.jpg)](https://www.crcpress.com/R-Markdown-The-Definitive-Guide/Xie-Allaire-Grolemund/p/book/9781138359338)
+    [![](./res/9781138359338.jpg)](https://www.crcpress.com/R-Markdown-The-Definitive-Guide/Xie-Allaire-Grolemund/p/book/9781138359338)
 
 - [ioslides presentation](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html)
