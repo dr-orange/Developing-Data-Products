@@ -48,9 +48,9 @@ Developing Data Products | Coursera
 for mobile-friendly interactive maps](https://leafletjs.com)
         - [Leaflet for R](https://rstudio.github.io/leaflet/)
         - [Using Leaflet with Shiny](https://rstudio.github.io/leaflet/shiny.html)
-        - [Plotly ggplot2 Library](https://plot.ly/ggplot2/)
     - `shiny`: [Interact. Analyze. Communicate.](http://shiny.rstudio.com)
     - `plotly`: [Modern Visualization for the Data Era](https://plot.ly)
+        - [Plotly ggplot2 Library](https://plot.ly/ggplot2/)
 
 - [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
 
