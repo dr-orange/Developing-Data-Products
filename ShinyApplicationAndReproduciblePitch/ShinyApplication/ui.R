@@ -55,7 +55,14 @@ shinyUI(
                 
                 # Appendix
                 h3("Appendix"),
-                tags$span("server.R and ui.R code on "),
-                tags$a(href="https://github.com/dr-orange/Developing-Data-Products/tree/master/ShinyApplicationAndReproduciblePitch/ShinyApplication", "GitHub")
+                p(
+                        tags$span("server.R and ui.R code on "),
+                        tags$a(href = "https://github.com/dr-orange/Developing-Data-Products/tree/master/ShinyApplicationAndReproduciblePitch/ShinyApplication", "GitHub")
+                ),
+                p(
+                        tags$span("Overview on "),
+                        tags$a(href = "http://rpubs.com/dr_orange_jr/406377", "RPubs")
+                )
+                
         )
 )
